@@ -7,13 +7,13 @@ Under any circumstances, never edit the name of any of the files/folders.
 
 Under any circumstances, never move/delete any file/folder.
 
-Under any circumstances, do not edit the contents of task_1a_result.txt
+Under any circumstances, do not edit the contents of task_(no)a_result.txt
 
 Do not edit the main() function.
 
-Do not edit the name of the detect_shapes() function.
+Do not edit the name of the prewritten function.
 
-Input and output arguments of the detect_shapes function is as specified. Do not change that.
+Input and output arguments of some function is as specified. Do not change that.
 
 Before submission make sure to remove all the statements responsible for displaying any image.
 
