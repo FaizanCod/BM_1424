@@ -15,8 +15,8 @@
 *****************************************************************************************
 '''
 
-# Team ID:			[ Team-ID ]
-# Author List:		[ Names of team members worked on this file separated by Comma: Name1, Name2, ... ]
+# Team ID:			BM_1424
+# Author List:		Uzma Khan, Shairin Meraj, Abbas Haider, Faizan Choudhary
 # Filename:			task_1a.py
 # Functions:		detect_shapes
 # 					[ Comma separated list of functions in this file ]
