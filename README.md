@@ -7,7 +7,7 @@ Under any circumstances, never edit the name of any of the files/folders.
 
 Under any circumstances, never move/delete any file/folder.
 
-Under any circumstances, do not edit the contents of task_(no)a_result.txt
+Under any circumstances, do not edit the contents of task_(no)a/b/c_result.txt
 
 Do not edit the main() function.
 
