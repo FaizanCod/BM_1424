@@ -176,7 +176,14 @@ def get_vision_sensor_image(client_id):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	return_code, vision_sensor_handle = sim.simxGetObjectHandle(client_id, "vision_sensor", sim.simx_opmode_oneshot_wait)
+	# or simx_opmode_blocking
 
+	# for first read 
+	return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_streaming)
+	
+	# for subsequent reads
+	return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_buffer)
 
 	##################################################
 
