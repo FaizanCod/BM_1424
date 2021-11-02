@@ -225,7 +225,18 @@ def transform_vision_sensor_image(vision_sensor_image, image_resolution):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# converting vision_sensor_image to numpy array
+	sensorImage = np.array(vision_sensor_image, dtype = np.uint8)
 
+	# resizing 1d array to 3d array
+	sensorImage.resize([image_resolution[0], image_resolution[1], 3])
+
+	# changing color from BGR to RGB
+	sensorImageRGB = cv2.cvtColor(sensorImage, cv2.COLOR_BGR2RGB)
+
+	# flipping about x-axis
+	transformed_image = cv2.flip(sensorImageRGB, 1)
+	
 	##################################################
 	
 	return transformed_image
