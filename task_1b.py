@@ -63,6 +63,9 @@ except Exception:
 
 ##############################################################
 
+# global client_id
+client_id = -1
+
 
 def init_remote_api_server():
 
@@ -91,7 +94,10 @@ def init_remote_api_server():
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# to close all opened connections
+	sim.simxFinish(-1)
 
+	client_id = sim.simxStart('127.0.0.1', 19997, True, True, 5000, 5)
 
 	##################################################
 
