@@ -132,7 +132,12 @@ def start_simulation(client_id):
 
 	##############	ADD YOUR CODE HERE	##############
 
-	
+	if (client_id != -1):
+		return_code = sim.simxStartSimulation(client_id, sim.simx_opmode_oneshot)
+        
+    	# retrieve the time needed for a command to be sent to the server, 
+    	# executed, and sent back to this function
+		sim.simxGetPingTime(client_id)
 
 	##################################################
 
