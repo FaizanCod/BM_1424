@@ -17,12 +17,12 @@
 '''
 
 
-# Team ID:			[ Team-ID ]
-# Author List:		[ Names of team members worked on this file separated by Comma: Name1, Name2, ... ]
+# Team ID:			BM_1424
+# Author List:      Uzma Khan, Shairin Meraj, Abbas Haider, Faizan Choudhary
 # Filename:			task_1b.py
 # Functions:		init_remote_api_server, start_simulation, stop_simulation, exit_remote_api_server, 
 #                   get_vision_sensor_image, transform_vision_sensor_image, detect_qr_codes
-# Global variables:	
+# Global variables:	client_id
 # 					[ List of global variables defined in this file ]
 
 
