@@ -283,7 +283,8 @@ def exit_remote_api_server(client_id):
 
 	##############	ADD YOUR CODE HERE	##############
 	
-
+	if (sim.simxGetLastCmdTime(client_id) == 0):
+		sim.simxFinish(client_id)
 
 	##################################################
 
