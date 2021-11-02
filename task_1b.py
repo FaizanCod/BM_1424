@@ -56,10 +56,37 @@ except Exception:
 ## readable and easy to understand.                         ##
 ##############################################################
 
+def centroid(img):
 
+    centroid = []
 
+    # reading image and converting it to grayscale
+    image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
 
+    # Thresholding
+    _, threshold = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY)
 
+    # Contouring
+    contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    # to loop over the contours
+    i=0
+    for cnt in contours:
+    
+        # here we are ignoring first counter because 
+        # findContours function detects whole image as shape
+        if i==0:
+            i=1
+            continue
+
+        M = cv2.moments(cnt)
+        if M['m00'] != 0.0:
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+
+        centroid.append((cx,cy))
+
+    return centroid
 
 ##############################################################
 
@@ -332,7 +359,11 @@ def detect_qr_codes(transformed_image):
 
 	qr_codes = []
 
+	##############	ADD YOUR CODE HERE	##############
 
+
+
+	##################################################
 
 	return qr_codes
 
