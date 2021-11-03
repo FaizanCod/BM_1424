@@ -56,37 +56,7 @@ except Exception:
 ## readable and easy to understand.                         ##
 ##############################################################
 
-def centroid(img):
 
-    centroid = []
-
-    # reading image and converting it to grayscale
-    image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-
-    # Thresholding
-    _, threshold = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY)
-
-    # Contouring
-    contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-    # to loop over the contours
-    i=0
-    for cnt in contours:
-    
-        # here we are ignoring first counter because 
-        # findContours function detects whole image as shape
-        if i==0:
-            i=1
-            continue
-
-        M = cv2.moments(cnt)
-        if M['m00'] != 0.0:
-            cx = int(M['m10']/M['m00'])
-            cy = int(M['m01']/M['m00'])
-
-        centroid.append((cx,cy))
-
-    return centroid
 
 ##############################################################
 
@@ -120,8 +90,8 @@ def init_remote_api_server():
 	client_id = -1
 
 	##############	ADD YOUR CODE HERE	##############
-
-	# to close all opened connections
+	
+    # to close all opened connections
 	sim.simxFinish(-1)
 
 	client_id = sim.simxStart('127.0.0.1', 19997, True, True, 5000, 5)
@@ -208,10 +178,11 @@ def get_vision_sensor_image(client_id):
 
 	# for first read 
 	return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_streaming)
-	
-	# for subsequent reads
-	return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_buffer)
 
+	while (return_code != 0):
+		# for subsequent reads
+		return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_buffer)
+	
 	##################################################
 
 	return vision_sensor_image, image_resolution, return_code
@@ -263,7 +234,7 @@ def transform_vision_sensor_image(vision_sensor_image, image_resolution):
 
 	# flipping about x-axis
 	transformed_image = cv2.flip(sensorImageRGB, 1)
-	
+
 	##################################################
 	
 	return transformed_image
@@ -361,7 +332,32 @@ def detect_qr_codes(transformed_image):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# converting to grayscale
+	gray_qr = cv2.cvtColor(transformed_image, 0)
 
+	# to find QR code
+	decodedQR = decode(gray_qr)
+
+	# loop over the detected QRcodes
+	for QRCode in decodedQR:
+		
+		# to find the bounding box for the QR code
+		(x, y, w, h) = QRCode.rect
+
+		QRCodeData = QRCode.data.decode("utf-8")
+
+		# appending the data decoded
+		qr = []
+		qr.append(str(QRCodeData))
+
+		# centroid
+		centroid = ()
+		cx = x + w/2
+		cy = y + h/2
+		centroid = (cx, cy)
+		qr.append(centroid)
+
+		qr_codes.append(qr)
 
 	##################################################
 
