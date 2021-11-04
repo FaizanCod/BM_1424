@@ -233,7 +233,7 @@ def transform_vision_sensor_image(vision_sensor_image, image_resolution):
 	sensorImageRGB = cv2.cvtColor(sensorImage, cv2.COLOR_BGR2RGB)
 
 	# flipping about x-axis
-	transformed_image = cv2.flip(sensorImageRGB, 1)
+	transformed_image = cv2.flip(sensorImageRGB, -1)
 
 	##################################################
 	
