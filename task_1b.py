@@ -233,7 +233,7 @@ def transform_vision_sensor_image(vision_sensor_image, image_resolution):
 	sensorImageRGB = cv2.cvtColor(sensorImage, cv2.COLOR_BGR2RGB)
 
 	# flipping about x-axis
-	transformed_image = cv2.flip(sensorImageRGB, -1)
+	transformed_image = cv2.flip(sensorImageRGB, 0)
 
 	##################################################
 	
@@ -352,8 +352,11 @@ def detect_qr_codes(transformed_image):
 
 		# centroid
 		centroid = ()
-		cx = x + int(w/2)
-		cy = y + int(h/2)
+		# w = round((w/2), 0)
+		# h = round((h/2), 0)
+		cx = x + w/2
+		cy = y + h/2
+		
 		centroid = (cx, cy)
 		qr.append(centroid)
 
