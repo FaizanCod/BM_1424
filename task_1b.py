@@ -299,7 +299,7 @@ def exit_remote_api_server(client_id):
 
 	##############	ADD YOUR CODE HERE	##############
 	
-	if (sim.simxGetLastCmdTime(client_id) == 0):
+	if (client_id != -1):
 		sim.simxFinish(client_id)
 
 	##################################################
@@ -352,8 +352,8 @@ def detect_qr_codes(transformed_image):
 
 		# centroid
 		centroid = ()
-		cx = x + w/2
-		cy = y + h/2
+		cx = x + int(w/2)
+		cy = y + int(h/2)
 		centroid = (cx, cy)
 		qr.append(centroid)
 
