@@ -158,6 +158,22 @@ def colors_detected(img):
 
 
 def shapes(img):
+    """
+    Purpose:
+    ---
+    This function takes the image as argument and returns a dictionary
+    denoting the shapes in the image.
+
+    Input Arguments:
+    ---
+    `img` : [ numpy array ]
+            numpy array of image returned by cv2 library
+
+    Returns:
+    ---
+    `img_shapes` : {dictionary}
+            dictionary containing details of shapes present in image
+    """
     
     img_shapes = {}
     # converting image to grayscale
