@@ -16,11 +16,10 @@
 *****************************************************************************************
 '''
 
-# Team ID:			[ Team-ID ]
-# Author List:		[ Names of team members worked on this file separated by Comma: Name1, Name2, ... ]
+# Team ID:			BM_1424
+# Author List:		Uzma Khan, Shairin Meraj, Abbas Haider, Faizan Choudhary
 # Filename:			task_1c.py
 # Functions:		read_distance_sensor, control_logic
-# 					[ Comma separated list of functions in this file ]
 # Global variables:	
 # 					[ List of global variables defined in this file ]
 
