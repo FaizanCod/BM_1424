@@ -92,10 +92,12 @@ def read_distance_sensor(client_id, sensor_handle):
 
 	##############	ADD YOUR CODE HERE	##############
 
-	return_code, detected, detected_pt, _, _ = sim.simxReadProximitySensor(client_id, sensor_handle, sim.simx_opmode_buffer)
+	return_code, detected, detected_pt, _, _ = sim.simxReadProximitySensor(client_id, sensor_handle, sim.simx_opmode_streaming)
 
-	if detected:
-		distance = math.sqrt(math.pow(detected_pt[0], 2) + math.pow(detected_pt[1], 2) + math.pow(detected_pt[2], 2))
+	while (return_code != 0):
+		return_code, detected, detected_pt, _, _ = sim.simxReadProximitySensor(client_id, sensor_handle, sim.simx_opmode_buffer)
+		if detected:
+			distance = detected_pt[2]
 
 	##################################################
 	return detected, distance
