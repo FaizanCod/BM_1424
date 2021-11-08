@@ -23,7 +23,8 @@
 # Global variables:	
 # 					[ List of global variables defined in this file ]
 
-
+# global variable
+return_code = 0
 
 ####################### IMPORT MODULES #######################
 ## You are not allowed to make any changes in this section. ##
@@ -90,8 +91,10 @@ def read_distance_sensor(client_id, sensor_handle):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	return_code, detected, detected_pt, _, _ = sim.simxReadProximitySensor(client_id, sensor_handle, sim.simx_opmode_buffer)
 
-
+	if detected:
+		distance = math.sqrt(math.pow(detected_pt[0], 2) + math.pow(detected_pt[1], 2) + math.pow(detected_pt[2], 2))
 
 	##################################################
 	return detected, distance
@@ -121,7 +124,7 @@ def control_logic(client_id):
 
 	##############  ADD YOUR CODE HERE  ##############
 
-
+	
 
 
 	##################################################
