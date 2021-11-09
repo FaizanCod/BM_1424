@@ -144,7 +144,7 @@ def control_logic(client_id):
 	Bot = sim.simxGetObjectHandle('Diff_Drive_Bot')
 
         if (detected_2 and dist<=0.15):
-        	current_rotation=simGetObjectOrientation(Bot,-1)[3]
+        	current_rotation= sim.simGetObjectOrientation(Bot,-1)[3]
     		targetrotation=current_rotation+90
     		while(current_rotation<targetrotation):
       			sim.simxSetJointTargetVelocity(leftJointHandle,-1 )
