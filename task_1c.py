@@ -141,14 +141,19 @@ def control_logic(client_id):
 	leftJointHandle = sim.simxGetObjectHandle(client_id, 'left_joint', sim.simx_opmode_oneshot_wait)
 	rightJointHandle = sim.simxGetObjectHandle(client_id, 'right_joint', sim.simx_opmode_oneshot_wait)
 
-	# Bot = sim.simxGetObjectHandle('Diff_Drive_Bot')
+	Bot = sim.simxGetObjectHandle('Diff_Drive_Bot')
 
-	while (detected_1):
-		if (detected_2 and dist<=0.15):
+        if (detected_2 and dist<=0.15):
+        	current_rotation=simGetObjectOrientation(Bot,-1)[3]
+    		targetrotation=current_rotation+90
+    		while(current_rotation<targetrotation):
+      			sim.simxSetJointTargetVelocity(leftJointHandle,-1 )
+      			sim.simxSetJointTargetVelocity(rightJointHandle,1)
+      			current_rotation=simGetObjectOrientation(Bot,-1)[3]
 			
-			sim.simxSetJointTargetVelocity(client_id, leftJointHandle, )
-
-
+		#original velocity is 28.648
+		simSetJointTargetVelocity(leftJointHandle,28.648)
+		simSetJointTargetVelocity(rightJointHandle,28.648)
 
 
 
