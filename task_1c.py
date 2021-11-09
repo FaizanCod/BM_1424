@@ -140,22 +140,47 @@ def control_logic(client_id):
 
 	_, leftJointHandle = sim.simxGetObjectHandle(client_id, 'left_joint', sim.simx_opmode_oneshot_wait)
 	_, rightJointHandle = sim.simxGetObjectHandle(client_id, 'right_joint', sim.simx_opmode_oneshot_wait)
+	
+	_,velocityLeftJoint=simGetObjectFloatParameter(leftJointHandle,2012)
 
 	_,Bot = sim.simxGetObjectHandle(client_id, 'Diff_Drive_Bot', sim.simx_opmode_oneshot_wait)
-
-	while (detected_1):
+	
+	noOfROtaions=0
+	while (noOfROtaions<=4):
 		detected_1, dist = read_distance_sensor(client_id, proximity_handle_1)
-		if (detected_2 and dist<=0.15):
-			current_rotation=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)[1]
-			target_rotation=current_rotation+90
-			while(current_rotation<=target_rotation):
-				sim.simxSetJointTargetVelocity(client_id, leftJointHandle, -1, sim.simx_opmode_streaming)
-				sim.simxSetJointTargetVelocity(client_id, rightJointHandle, 1, sim.simx_opmode_streaming)
-				current_rotation=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)[1]
+		
+		if detected_1:
+			 if distance <= 0.15:
+					#Rotation should happen
+					noOfROtaions++
+					_,eulerAngles=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)
+					curr_angle = eulerAngles[2] * 180/math.pi
+					final_angle = (eulerAngles[2] + 90 + 360) % 360
+				
+					if curr_angle < 0:
+						curr_angle = curr_angle + 360
+
+					 while curr_angle <= final_angle:
+						_, eulerAngles = sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)
+						curr_angle = eulerAngles[2] * 180/math.pi
+						if curr_angle < 0:
+							curr_angle = curr_angle + 360
+						sim.simxSetJointTargetVelocity  (client_id, leftJointHandle, -velocityLeftJoint/10 , sim.simx_opmode_oneshot)
+						sim.simxSetJointTargetVelocity (client_id, rightJointHandle, velocityLeftJoint/10 , sim.simx_opmode_oneshot)
+		sim.simxSetJointTargetVelocity  (client_id, rightJointHandle, velocityLeftJoint , sim.simx_opmode_oneshot)
+                sim.simxSetJointTargetVelocity (client_id, leftJointHandle, velocityLeftJoint, sim.simx_opmode_oneshot)
+	return_code = sim.simxSetJointTargetVelocity  (client_id, left_joint, velocityLeftJoint , sim.simx_opmode_oneshot)
+    
+				
+# 			target_rotation=current_rotation+90
+# 			while(current_rotation<=target_rotation):
+# 				sim.simxSetJointTargetVelocity(client_id, leftJointHandle, -1, sim.simx_opmode_streaming)
+# 				sim.simxSetJointTargetVelocity(client_id, rightJointHandle, 1, sim.simx_opmode_streaming)
+# 				current_rotation=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)[1]
 			
-			#original velocity is 28.648
-			sim.simxSetJointTargetVelocity(client_id, leftJointHandle, 28.648, sim.simx_opmode_streaming)
-			sim.simxSetJointTargetVelocity(client_id, rightJointHandle, 28.648, sim.simx_opmode_streaming)
+# 			original velocity is 28.648
+# 			sim.simxSetJointTargetVelocity(client_id, leftJointHandle, 28.648, sim.simx_opmode_streaming)
+# 			sim.simxSetJointTargetVelocity(client_id, rightJointHandle, 28.648, sim.simx_opmode_streaming)
 
 
 
