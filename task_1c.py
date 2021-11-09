@@ -152,8 +152,8 @@ def control_logic(client_id):
       			current_rotation=simGetObjectOrientation(Bot,-1)[3]
 			
 		#original velocity is 28.648
-		simSetJointTargetVelocity(leftJointHandle,28.648)
-		simSetJointTargetVelocity(rightJointHandle,28.648)
+		sim.simxSetJointTargetVelocity(leftJointHandle,28.648)
+		sim.simxSetJointTargetVelocity(rightJointHandle,28.648)
 
 
 
