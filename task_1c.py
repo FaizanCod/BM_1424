@@ -127,15 +127,16 @@ def control_logic(client_id):
 
 	##############  ADD YOUR CODE HERE  ##############
 
-	return_code, proximity_handle_1 = sim.simxGetObjectHandle(client_id, "distance_sensor_1", sim.simx_opmode_oneshot_wait)
+	return_code, proximity_handle_1 = sim.simxGetObjectHandle(client_id, "distance_sensor_1", sim.simx_opmode_blocking)
 
-	return_code, proximity_handle_2 = sim.simxGetObjectHandle(client_id, "distance_sensor_2", sim.simx_opmode_oneshot_wait)
+	return_code, proximity_handle_2 = sim.simxGetObjectHandle(client_id, "distance_sensor_2", sim.simx_opmode_blocking)
 
 	detected_1, dist = read_distance_sensor(client_id, proximity_handle_1)
 
 	detected_2, init_dist = read_distance_sensor(client_id, proximity_handle_2)
 
-	print(init_dist)
+	# print(init_dist)
+	# print(dist)
 
 	leftJointHandle = sim.simxGetObjectHandle(client_id, 'left_joint', sim.simx_opmode_oneshot_wait)
 	rightJointHandle = sim.simxGetObjectHandle(client_id, 'right_joint', sim.simx_opmode_oneshot_wait)
@@ -143,17 +144,9 @@ def control_logic(client_id):
 	# Bot = sim.simxGetObjectHandle('Diff_Drive_Bot')
 
 	while (detected_1):
-		detected_1, dist = read_distance_sensor(client_id, proximity_handle_1)
-		# if (dist == init_dist)
-	# while (dist >= init_dist and detected_1 == True):
-		# turn
-		while (dist != init_dist):
-			rotAmount=-math.pi/2
-			rotSpeed=1
-			sign=rotAmount/math.abs(rotAmount)
-			sim.simxSetJointTargetVelocity(leftJointHandle, -rotSpeed*sign)
-			sim.simxSetJointTargetVelocity(rightJointHandle,rotSpeed*sign)
-	
+		if (detected_2 and dist<=0.15):
+			
+			sim.simxSetJointTargetVelocity(client_id, leftJointHandle, )
 
 
 
