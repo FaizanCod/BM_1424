@@ -138,22 +138,24 @@ def control_logic(client_id):
 	# print(init_dist)
 	# print(dist)
 
-	leftJointHandle = sim.simxGetObjectHandle(client_id, 'left_joint', sim.simx_opmode_oneshot_wait)
-	rightJointHandle = sim.simxGetObjectHandle(client_id, 'right_joint', sim.simx_opmode_oneshot_wait)
+	_, leftJointHandle = sim.simxGetObjectHandle(client_id, 'left_joint', sim.simx_opmode_oneshot_wait)
+	_, rightJointHandle = sim.simxGetObjectHandle(client_id, 'right_joint', sim.simx_opmode_oneshot_wait)
 
-	Bot = sim.simxGetObjectHandle('Diff_Drive_Bot')
+	_,Bot = sim.simxGetObjectHandle(client_id, 'Diff_Drive_Bot', sim.simx_opmode_oneshot_wait)
 
-        if (detected_2 and dist<=0.15):
-        	current_rotation= sim.simGetObjectOrientation(Bot,-1)[3]
-    		targetrotation=current_rotation+90
-    		while(current_rotation<targetrotation):
-      			sim.simxSetJointTargetVelocity(leftJointHandle,-1 )
-      			sim.simxSetJointTargetVelocity(rightJointHandle,1)
-      			current_rotation=simGetObjectOrientation(Bot,-1)[3]
+	while (detected_1):
+		detected_1, dist = read_distance_sensor(client_id, proximity_handle_1)
+		if (detected_2 and dist<=0.15):
+			current_rotation=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)[1]
+			target_rotation=current_rotation+90
+			while(current_rotation<=target_rotation):
+				sim.simxSetJointTargetVelocity(client_id, leftJointHandle, -1, sim.simx_opmode_streaming)
+				sim.simxSetJointTargetVelocity(client_id, rightJointHandle, 1, sim.simx_opmode_streaming)
+				current_rotation=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)[1]
 			
-		#original velocity is 28.648
-		sim.simxSetJointTargetVelocity(leftJointHandle,28.648)
-		sim.simxSetJointTargetVelocity(rightJointHandle,28.648)
+			#original velocity is 28.648
+			sim.simxSetJointTargetVelocity(client_id, leftJointHandle, 28.648, sim.simx_opmode_streaming)
+			sim.simxSetJointTargetVelocity(client_id, rightJointHandle, 28.648, sim.simx_opmode_streaming)
 
 
 
