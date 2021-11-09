@@ -131,45 +131,51 @@ def control_logic(client_id):
 
 	return_code, proximity_handle_2 = sim.simxGetObjectHandle(client_id, "distance_sensor_2", sim.simx_opmode_blocking)
 
+	# return_code, path = sim.simxGetObjectHandle(client_id, "Path", sim.simx_opmode_blocking)
+
+	# return_code, wall = sim.simxGetObjectHandle(client_id, "Walls", sim.simx_opmode_blocking)
+
 	detected_1, dist = read_distance_sensor(client_id, proximity_handle_1)
 
 	detected_2, init_dist = read_distance_sensor(client_id, proximity_handle_2)
 
-	# print(init_dist)
-	# print(dist)
+	# return_code, min_dist = sim.simxCheckDistance(client_id, path, wall, sim.simx_opmode_streaming)
+
+	print(init_dist)
 
 	_, leftJointHandle = sim.simxGetObjectHandle(client_id, 'left_joint', sim.simx_opmode_oneshot_wait)
 	_, rightJointHandle = sim.simxGetObjectHandle(client_id, 'right_joint', sim.simx_opmode_oneshot_wait)
 	
-	_,velocityLeftJoint=simGetObjectFloatParameter(leftJointHandle,2012)
+	_,velocityLeftJoint=sim.simxGetObjectFloatParameter(client_id, leftJointHandle, 2012, sim.simx_opmode_blocking)
 
 	_,Bot = sim.simxGetObjectHandle(client_id, 'Diff_Drive_Bot', sim.simx_opmode_oneshot_wait)
 	
-	noOfROtaions=0
-	while (noOfROtaions<=4):
+	noOfRotations=0
+	while (noOfRotations<=4):
 		detected_1, dist = read_distance_sensor(client_id, proximity_handle_1)
 		
 		if detected_1:
-			 if distance <= 0.15:
-					#Rotation should happen
-					noOfROtaions++
-					_,eulerAngles=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)
-					curr_angle = eulerAngles[2] * 180/math.pi
-					final_angle = (eulerAngles[2] + 90 + 360) % 360
+			if dist <= 0.13:
+				print(dist)
+				#Rotation should happen
+				noOfRotations+=1
+				return_code ,eulerAngles=sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)
+				curr_angle = eulerAngles[2] * 180/math.pi
+				final_angle = (curr_angle + 90 + 360) % 360
 				
+				if curr_angle < 0:
+					curr_angle = curr_angle + 360
+
+				while curr_angle <= final_angle:
+					return_code, eulerAngles = sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)
+					curr_angle = eulerAngles[2] * 180/math.pi
 					if curr_angle < 0:
 						curr_angle = curr_angle + 360
-
-					 while curr_angle <= final_angle:
-						_, eulerAngles = sim.simxGetObjectOrientation(client_id, Bot, -1, sim.simx_opmode_streaming)
-						curr_angle = eulerAngles[2] * 180/math.pi
-						if curr_angle < 0:
-							curr_angle = curr_angle + 360
-						sim.simxSetJointTargetVelocity  (client_id, leftJointHandle, -velocityLeftJoint/10 , sim.simx_opmode_oneshot)
-						sim.simxSetJointTargetVelocity (client_id, rightJointHandle, velocityLeftJoint/10 , sim.simx_opmode_oneshot)
-		sim.simxSetJointTargetVelocity  (client_id, rightJointHandle, velocityLeftJoint , sim.simx_opmode_oneshot)
-                sim.simxSetJointTargetVelocity (client_id, leftJointHandle, velocityLeftJoint, sim.simx_opmode_oneshot)
-	return_code = sim.simxSetJointTargetVelocity  (client_id, left_joint, velocityLeftJoint , sim.simx_opmode_oneshot)
+					sim.simxSetJointTargetVelocity  (client_id, leftJointHandle, -velocityLeftJoint/10 , sim.simx_opmode_oneshot)
+					sim.simxSetJointTargetVelocity (client_id, rightJointHandle, velocityLeftJoint/10 , sim.simx_opmode_oneshot)
+				sim.simxSetJointTargetVelocity  (client_id, rightJointHandle, velocityLeftJoint , sim.simx_opmode_oneshot)
+				sim.simxSetJointTargetVelocity (client_id, leftJointHandle, velocityLeftJoint, sim.simx_opmode_oneshot)
+				return_code = sim.simxSetJointTargetVelocity  (client_id, leftJointHandle, velocityLeftJoint , sim.simx_opmode_oneshot)
     
 				
 # 			target_rotation=current_rotation+90
