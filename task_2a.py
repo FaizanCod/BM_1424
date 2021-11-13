@@ -146,6 +146,12 @@ def get_vision_sensor_depth_image(client_id, vision_sensor_handle):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# for first read 
+	return_code, image_resolution, vision_sensor_depth_image = sim.simxGetVisionSensorDepthBuffer(client_id, vision_sensor_handle, sim.simx_opmode_streaming)
+
+	while (return_code != 0):
+		# for subsequent reads
+		return_code, image_resolution, vision_sensor_depth_image = sim.simxGetVisionSensorDepthBuffer(client_id, vision_sensor_handle, sim.simx_opmode_buffer)
 
 	##################################################
 
