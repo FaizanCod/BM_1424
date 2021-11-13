@@ -192,6 +192,14 @@ def transform_vision_sensor_depth_image(vision_sensor_depth_image, image_resolut
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# converting vision_sensor_depth_image to numpy array
+	sensorImage = np.array(vision_sensor_depth_image, dtype = np.float32)
+
+	# resizing 1d array to 2d array
+	sensorImage.resize([image_resolution[0], image_resolution[1], 2])
+
+	# flipping about y-axis
+	transformed_depth_image = cv2.flip(sensorImage, 1)
 
 	##################################################
 	
