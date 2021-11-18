@@ -59,9 +59,149 @@ except ImportError:
 ## readable and easy to understand.                         ##
 ##############################################################
 
+def centroid(contour):
+	"""
+	Purpose:
+	---
+	This function takes contour as an argument and returns a list containing
+	the x and y values of the centroid
+
+	Input Arguments:
+	---
+	`contour` : [ numpy array ]
+			numpy array of (x, y) coordinates of boundary points of the object.
+
+	Returns:
+	---
+	`centroid` : [ list ]
+			list of (x,y) coordinates of the centroid of the contours
+	"""
+	
+	centroid = []
+
+	M = cv2.moments(contour)
+	if M['m00'] != 0.0:
+		cx = int(M['m10']/M['m00'])
+		cy = int(M['m01']/M['m00'])
+
+		centroid.append((cx,cy))
+
+	return centroid
+
+def colors_detected(img):
+	"""
+	Purpose:
+	---
+	This function takes the image as argument and returns a dictionary
+	denoting the color of the shapes in the image.
+
+	Input Arguments:
+	---
+	`img` : [ numpy array ]
+			numpy array of image returned by cv2 library
+
+	Returns:
+	---
+	`detected_colors` : {dictionary}
+			dictionary containing details of colors present in image
+	"""
+	detected_colors = {}
+
+	# image = cv2.imread(img)                
+	# Convert BGR to HSV
+	hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+	# defining color ranges
+
+	# red color range
+	low_red = np.array([0, 150, 50], np.uint8)
+	high_red = np.array([10, 255, 255], np.uint8)
+	red_mask = cv2.inRange(hsv_frame, low_red, high_red)
+
+	# blue color range
+	low_blue = np.array([94, 80, 2], np.uint8)
+	high_blue = np.array([126, 255, 255], np.uint8)
+	blue_mask = cv2.inRange(hsv_frame, low_blue, high_blue)
+
+	# yellow color range
+	low_yellow = np.array([22, 93, 0], np.uint8)
+	high_yellow = np.array([45, 255, 255], np.uint8)
+	yellow_mask = cv2.inRange(hsv_frame, low_yellow, high_yellow)
+
+	#Morphological Transform: Dilation, to remove noises from the images and performing bitwise_and function to specifically detect a particular color.
+
+	kernal = np.ones((6, 6), "uint8")
+		
+	# For red color
+	red_mask = cv2.dilate(red_mask, kernal)
+		
+	# For blue color
+	blue_mask = cv2.dilate(blue_mask, kernal)
+
+	# For yellow color
+	yellow_mask = cv2.dilate(yellow_mask, kernal)
 
 
+	# Contours for color detection
 
+	# Creating contour to track red color
+	red_contours, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	
+	# Creating contour to track blue color
+	blue_contours, _ = cv2.findContours(blue_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+			
+	# Creating contour to track yellow color
+	yellow_contours, _ = cv2.findContours(yellow_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
+		
+	red = ()
+	blue = ()
+	yellow = ()
+
+	red_centroids = []
+	blue_centroids = []
+	yellow_centroids = []
+
+	# RED
+	for contour in red_contours:
+		area = cv2.contourArea(contour)
+		if(area > 300):
+			centroids = centroid(contour)
+
+		# centroid    
+			cx = centroids[0][0]
+			cy = centroids[0][1]
+			red = (cx,cy)
+			red_centroids.append(red)
+			
+	#BLUE
+	for contour in blue_contours:
+		area = cv2.contourArea(contour)
+		if(area > 300):
+			centroids = centroid(contour)
+
+		# centroid    
+			cx = centroids[0][0]
+			cy = centroids[0][1]
+			blue = (cx,cy)
+			blue_centroids.append(blue)
+			
+	#YELLOW
+	for contour in yellow_contours:
+		area = cv2.contourArea(contour)
+		if(area > 300):
+			centroids = centroid(contour)
+
+		# centroid    
+			cx = centroids[0][0]
+			cy = centroids[0][1]
+			yellow = (cx,cy)
+			yellow_centroids.append(yellow)
+
+	detected_colors['Red'] = red_centroids
+	detected_colors['Blue'] = blue_centroids
+	detected_colors['Yellow'] = yellow_centroids
+
+	return detected_colors
 
 
 ##############################################################
@@ -234,7 +374,7 @@ def detect_berries(transformed_image, transformed_depth_image):
 
 	##############	ADD YOUR CODE HERE	##############
 	
-
+	
 	
 	##################################################
 	return berries_dictionary
