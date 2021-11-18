@@ -374,7 +374,36 @@ def detect_berries(transformed_image, transformed_depth_image):
 
 	##############	ADD YOUR CODE HERE	##############
 	
-	
+	colors = colors_detected(transformed_image)
+
+	keys_color = list(colors.keys())
+
+	for key in keys_color:
+		if (key == 'Red'):
+			c = colors.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				depth = transformed_depth_image[cy-1][cx-1]
+				coord = (cx,cy,depth)
+				berries_dictionary[berries[0]] = [coord]
+		elif (key == 'Blue'):
+			c = colors.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				depth = transformed_depth_image[cy-1][cx-1]
+				coord = (cx,cy,depth)
+				berries_dictionary[berries[1]] = [coord]
+		elif (key == 'Yellow'):
+			c = colors.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				depth = transformed_depth_image[cy-1][cx-1]
+				coord = (cx,cy,depth)
+				berries_dictionary[berries[2]] = [coord]
+				
 	
 	##################################################
 	return berries_dictionary
