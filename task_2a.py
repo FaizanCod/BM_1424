@@ -336,7 +336,8 @@ def transform_vision_sensor_depth_image(vision_sensor_depth_image, image_resolut
 	sensorImage = np.array(vision_sensor_depth_image, dtype = np.float32)
 
 	# resizing 1d array to 2d array
-	sensorImage.resize([image_resolution[0], image_resolution[1], 2])
+	sensorImage.resize([image_resolution[0], image_resolution[1]])
+	# print(image_resolution)
 
 	# flipping about y-axis
 	transformed_depth_image = cv2.flip(sensorImage, 1)
@@ -379,32 +380,42 @@ def detect_berries(transformed_image, transformed_depth_image):
 	keys_color = list(colors.keys())
 
 	for key in keys_color:
+
+		coordinates = []
+
 		if (key == 'Red'):
 			c = colors.get(key)
 			for pair in c:
 				cx = pair[0]
 				cy = pair[1]
 				depth = transformed_depth_image[cy-1][cx-1]
+				depth = round(depth,2)
 				coord = (cx,cy,depth)
-				berries_dictionary[berries[0]] = [coord]
+				coordinates.insert(3,coord)
+				berries_dictionary[berries[0]] = coordinates
+			
 		elif (key == 'Blue'):
 			c = colors.get(key)
 			for pair in c:
 				cx = pair[0]
 				cy = pair[1]
 				depth = transformed_depth_image[cy-1][cx-1]
+				depth = round(depth,2)
 				coord = (cx,cy,depth)
-				berries_dictionary[berries[1]] = [coord]
+				coordinates.insert(3,coord)
+				berries_dictionary[berries[1]] = coordinates
+	
 		elif (key == 'Yellow'):
 			c = colors.get(key)
 			for pair in c:
 				cx = pair[0]
 				cy = pair[1]
 				depth = transformed_depth_image[cy-1][cx-1]
+				depth = round(depth,2)
 				coord = (cx,cy,depth)
-				berries_dictionary[berries[2]] = [coord]
-				
-	
+				coordinates.insert(3,coord)
+				berries_dictionary[berries[2]] = coordinates
+
 	##################################################
 	return berries_dictionary
 
@@ -435,6 +446,95 @@ def detect_berry_positions(berries_dictionary):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	keys = list(berries_dictionary.keys())
+
+	for key in keys:
+
+		coordinates = []
+
+		if (key == 'Strawberry'):
+			c = berries_dictionary.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				z3 = pair[2]
+
+				y = 256*0.0002645833
+				cxt = cx*0.0002645833 - y
+				cyt = cy*0.0002645833 - y
+
+				if(cx > 256 or cy > 256):
+					z1 = ((cxt+y)/2*y) - 0.5
+					z2 = ((cyt+y)/2*y) - 0.5
+				else:
+					z1 = ((cxt+y)/2*y) + 0.5
+					z2 = ((cyt+y)/2*y) + 0.5
+
+				z3 = z3*2
+
+				z1 = round(z1,2)
+				z2 = round(z2,2)
+				z3 = round(z3,2)
+
+				coord = (z1,z2,z3)
+				coordinates.insert(3,coord)
+				berry_positions_dictionary[berries[0]] = coordinates
+
+		elif (key == 'Blueberry'):
+			c = berries_dictionary.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				z3 = pair[2]
+
+				y = 256*0.0002645833
+				cxt = cx*0.0002645833 - y
+				cyt = cy*0.0002645833 - y
+
+				if(cx > 256 or cy > 256):
+					z1 = ((cxt+y)/2*y) - 0.5
+					z2 = ((cyt+y)/2*y) - 0.5
+				else:
+					z1 = ((cxt+y)/2*y) + 0.5
+					z2 = ((cyt+y)/2*y) + 0.5
+
+				z3 = z3*2
+
+				z1 = round(z1,2)
+				z2 = round(z2,2)
+				z3 = round(z3,2)
+
+				coord = (z1,z2,z3)
+				coordinates.insert(3,coord)
+				berry_positions_dictionary[berries[1]] = coordinates
+		
+		if (key == 'Lemon'):
+			c = berries_dictionary.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				z3 = pair[2]
+
+				y = 256*0.0002645833
+				cxt = cx*0.0002645833 - y
+				cyt = cy*0.0002645833 - y
+
+				if(cx > 256 or cy > 256):
+					z1 = ((cxt+y)/2*y) - 0.5
+					z2 = ((cyt+y)/2*y) - 0.5
+				else:
+					z1 = ((cxt+y)/2*y) + 0.5
+					z2 = ((cyt+y)/2*y) + 0.5
+
+				z3 = z3*2
+
+				z1 = round(z1,2)
+				z2 = round(z2,2)
+				z3 = round(z3,2)
+
+				coord = (z1,z2,z3)
+				coordinates.insert(3,coord)
+				berry_positions_dictionary[berries[2]] = coordinates
 
 
 	##################################################
