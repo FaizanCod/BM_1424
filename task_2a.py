@@ -113,10 +113,10 @@ def colors_detected(img):
 
 	# defining color ranges
 
-	# red color range
-	low_red = np.array([0, 150, 50], np.uint8)
-	high_red = np.array([10, 255, 255], np.uint8)
-	red_mask = cv2.inRange(hsv_frame, low_red, high_red)
+	# pink color range
+	low_pink = np.array([130, 0, 220], np.uint8)
+	high_pink = np.array([170, 255, 255], np.uint8)
+	pink_mask = cv2.inRange(hsv_frame, low_pink, high_pink)
 
 	# blue color range
 	low_blue = np.array([94, 80, 2], np.uint8)
@@ -132,8 +132,8 @@ def colors_detected(img):
 
 	kernal = np.ones((6, 6), "uint8")
 		
-	# For red color
-	red_mask = cv2.dilate(red_mask, kernal)
+	# For pink color
+	pink_mask = cv2.dilate(pink_mask, kernal)
 		
 	# For blue color
 	blue_mask = cv2.dilate(blue_mask, kernal)
@@ -141,11 +141,10 @@ def colors_detected(img):
 	# For yellow color
 	yellow_mask = cv2.dilate(yellow_mask, kernal)
 
-
 	# Contours for color detection
 
-	# Creating contour to track red color
-	red_contours, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	# Creating contour to track pink color
+	pink_contours, _ = cv2.findContours(pink_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	
 	# Creating contour to track blue color
 	blue_contours, _ = cv2.findContours(blue_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -153,16 +152,16 @@ def colors_detected(img):
 	# Creating contour to track yellow color
 	yellow_contours, _ = cv2.findContours(yellow_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
 		
-	red = ()
+	pink = ()
 	blue = ()
 	yellow = ()
 
-	red_centroids = []
+	pink_centroids = []
 	blue_centroids = []
 	yellow_centroids = []
 
-	# RED
-	for contour in red_contours:
+	# PINK
+	for contour in pink_contours:
 		area = cv2.contourArea(contour)
 		if(area > 300):
 			centroids = centroid(contour)
@@ -170,8 +169,8 @@ def colors_detected(img):
 		# centroid    
 			cx = centroids[0][0]
 			cy = centroids[0][1]
-			red = (cx,cy)
-			red_centroids.append(red)
+			pink = (cx,cy)
+			pink_centroids.append(pink)
 			
 	#BLUE
 	for contour in blue_contours:
@@ -197,7 +196,7 @@ def colors_detected(img):
 			yellow = (cx,cy)
 			yellow_centroids.append(yellow)
 
-	detected_colors['Red'] = red_centroids
+	detected_colors['Pink'] = pink_centroids
 	detected_colors['Blue'] = blue_centroids
 	detected_colors['Yellow'] = yellow_centroids
 
@@ -383,7 +382,7 @@ def detect_berries(transformed_image, transformed_depth_image):
 
 		coordinates = []
 
-		if (key == 'Red'):
+		if (key == 'Pink'):
 			c = colors.get(key)
 			for pair in c:
 				cx = pair[0]
@@ -464,11 +463,11 @@ def detect_berry_positions(berries_dictionary):
 				cyt = cy*0.0002645833 - y
 
 				if(cx > 256 or cy > 256):
-					z1 = ((cxt+y)/2*y) - 0.5
-					z2 = ((cyt+y)/2*y) - 0.5
+					z1 = ((cxt+y)/(2*y)) - 0.5
+					z2 = ((cyt+y)/(2*y)) - 0.5
 				else:
-					z1 = ((cxt+y)/2*y) + 0.5
-					z2 = ((cyt+y)/2*y) + 0.5
+					z1 = ((cxt+y)/(2*y)) + 0.5
+					z2 = ((cyt+y)/(2*y)) + 0.5
 
 				z3 = z3*2
 
@@ -492,11 +491,11 @@ def detect_berry_positions(berries_dictionary):
 				cyt = cy*0.0002645833 - y
 
 				if(cx > 256 or cy > 256):
-					z1 = ((cxt+y)/2*y) - 0.5
-					z2 = ((cyt+y)/2*y) - 0.5
+					z1 = ((cxt+y)/(2*y)) - 0.5
+					z2 = ((cyt+y)/(2*y)) - 0.5
 				else:
-					z1 = ((cxt+y)/2*y) + 0.5
-					z2 = ((cyt+y)/2*y) + 0.5
+					z1 = ((cxt+y)/(2*y)) + 0.5
+					z2 = ((cyt+y)/(2*y)) + 0.5
 
 				z3 = z3*2
 
@@ -520,11 +519,11 @@ def detect_berry_positions(berries_dictionary):
 				cyt = cy*0.0002645833 - y
 
 				if(cx > 256 or cy > 256):
-					z1 = ((cxt+y)/2*y) - 0.5
-					z2 = ((cyt+y)/2*y) - 0.5
+					z1 = ((cxt+y)/(2*y)) - 0.5
+					z2 = ((cyt+y)/(2*y)) - 0.5
 				else:
-					z1 = ((cxt+y)/2*y) + 0.5
-					z2 = ((cyt+y)/2*y) + 0.5
+					z1 = ((cxt+y)/(2*y)) + 0.5
+					z2 = ((cyt+y)/(2*y)) + 0.5
 
 				z3 = z3*2
 
