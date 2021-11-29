@@ -374,6 +374,10 @@ def detect_berries(transformed_image, transformed_depth_image):
 
 	##############	ADD YOUR CODE HERE	##############
 	
+	berries_dictionary[berries[0]] = []
+	berries_dictionary[berries[1]] = []
+	berries_dictionary[berries[2]] = []
+
 	colors = colors_detected(transformed_image)
 
 	keys_color = list(colors.keys())
@@ -444,6 +448,10 @@ def detect_berry_positions(berries_dictionary):
 	berries = ["Strawberry", "Blueberry", "Lemon"]
 
 	##############	ADD YOUR CODE HERE	##############
+
+	berry_positions_dictionary[berries[0]] = []
+	berry_positions_dictionary[berries[1]] = []
+	berry_positions_dictionary[berries[2]] = []
 
 	keys = list(berries_dictionary.keys())
 
