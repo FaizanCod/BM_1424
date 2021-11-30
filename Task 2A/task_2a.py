@@ -16,8 +16,8 @@
 *****************************************************************************************
 '''
 
-# Team ID:			[ Team-ID ]
-# Author List:		[ Names of team members worked on this file separated by Comma: Name1, Name2, ... ]
+# Team ID:			BM_1424
+# Author List:      Uzma Khan, Shairin Meraj, Abbas Haider, Faizan Choudhary
 # Filename:			task_2a.py
 # Functions:		
 # Global variables:	
@@ -59,9 +59,197 @@ except ImportError:
 ## readable and easy to understand.                         ##
 ##############################################################
 
+def centroid(contour):
+	"""
+	Purpose:
+	---
+	This function takes contour as an argument and returns a list containing
+	the x and y values of the centroid
 
+	Input Arguments:
+	---
+	`contour` : [ numpy array ]
+			numpy array of (x, y) coordinates of boundary points of the object.
 
+	Returns:
+	---
+	`centroid` : [ list ]
+			list of (x,y) coordinates of the centroid of the contours
+	"""
+	
+	centroid = []
 
+	M = cv2.moments(contour)
+	if M['m00'] != 0.0:
+		cx = int(M['m10']/M['m00'])
+		cy = int(M['m01']/M['m00'])
+
+		centroid.append((cx,cy))
+
+	return centroid
+
+def shapes (img):
+
+	shapes = []
+	image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Thresholding
+	_, threshold = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY)
+
+    # Contouring
+	contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    #to loop over the contours
+	i=0
+	for cnt in contours:
+    
+        # ignoring first counter because 
+        # findcontour function detects whole image as one shape
+		if i==0:
+			i=1
+			continue
+
+        # approximating
+		approx = cv2.approxPolyDP(cnt, 0.025*cv2.arcLength(cnt, True), True)
+
+		centroids = centroid(cnt)
+
+		# centroid    
+		cx = centroids[0][0]
+		cy = centroids[0][1]
+		
+		coord = (cx,cy)
+		shapes.append(coord)
+	
+	return shapes
+
+def colors_detected(img):
+	"""
+	Purpose:
+	---
+	This function takes the image as argument and returns a dictionary
+	denoting the color of the shapes in the image.
+
+	Input Arguments:
+	---
+	`img` : [ numpy array ]
+			numpy array of image returned by cv2 library
+
+	Returns:
+	---
+	`detected_colors` : {dictionary}
+			dictionary containing details of colors present in image
+	"""
+	detected_colors = {}
+
+	# image = cv2.imread(img)                
+	# Convert BGR to HSV
+	hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+	# defining color ranges
+
+	# pink color range
+	low_pink = np.array([130, 0, 220], np.uint8)
+	high_pink = np.array([170, 255, 255], np.uint8)
+	pink_mask = cv2.inRange(hsv_frame, low_pink, high_pink)
+
+	# blue color range
+	low_blue = np.array([94, 80, 2], np.uint8)
+	high_blue = np.array([126, 255, 255], np.uint8)
+	blue_mask = cv2.inRange(hsv_frame, low_blue, high_blue)
+
+	# yellow color range
+	low_yellow = np.array([22, 93, 0], np.uint8)
+	high_yellow = np.array([45, 255, 255], np.uint8)
+	yellow_mask = cv2.inRange(hsv_frame, low_yellow, high_yellow)
+
+	#Morphological Transform: Dilation, to remove noises from the images and performing bitwise_and function to specifically detect a particular color.
+
+	kernal = np.ones((6, 6), "uint8")
+		
+	# For pink color
+	pink_mask = cv2.dilate(pink_mask, kernal)
+		
+	# For blue color
+	blue_mask = cv2.dilate(blue_mask, kernal)
+
+	# For yellow color
+	yellow_mask = cv2.dilate(yellow_mask, kernal)
+
+	# Contours for color detection
+
+	# Creating contour to track pink color
+	pink_contours, _ = cv2.findContours(pink_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	
+	# Creating contour to track blue color
+	blue_contours, _ = cv2.findContours(blue_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+			
+	# Creating contour to track yellow color
+	yellow_contours, _ = cv2.findContours(yellow_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
+		
+	pink = ()
+	blue = ()
+	yellow = ()
+
+	pink_centroids = []
+	blue_centroids = []
+	yellow_centroids = []
+	cent = []
+
+	cent = shapes(img)
+	print(cent)
+
+	# PINK
+	for contour in pink_contours:
+		area = cv2.contourArea(contour)
+		if(area > 300):
+			# centroids = centroid(contour)
+
+		# centroid    
+			cx = cent[0][0]
+			cy = cent[0][1]
+			pink = (cx,cy)
+			pink_centroids.append(pink)
+			if (len(cent)>0):
+				print (cent)
+				cent.pop(0)
+			
+	#BLUE
+	for contour in blue_contours:
+		area = cv2.contourArea(contour)
+		if(area > 300):
+			# centroids = centroid(contour)
+
+		# centroid    
+			cx = cent[0][0]
+			cy = cent[0][1]
+			blue = (cx,cy)
+			blue_centroids.append(blue)
+			if (len(cent)>0):
+				print (cent)
+				cent.pop(0)
+			
+	#YELLOW
+	for contour in yellow_contours:
+		area = cv2.contourArea(contour)
+		if(area > 300):
+			# centroids = centroid(contour)
+
+		# centroid    
+			cx = cent[0][0]
+			cy = cent[0][1]
+			yellow = (cx,cy)
+			yellow_centroids.append(yellow)
+			if (len(cent)>0):
+				print (cent)
+				cent.pop(0)
+				
+
+	detected_colors['Pink'] = pink_centroids
+	detected_colors['Blue'] = blue_centroids
+	detected_colors['Yellow'] = yellow_centroids
+
+	return detected_colors
 
 
 ##############################################################
@@ -101,6 +289,12 @@ def get_vision_sensor_image(client_id, vision_sensor_handle):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# for first read 
+	return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_streaming)
+
+	while (return_code != 0):
+		# for subsequent reads
+		return_code, image_resolution, vision_sensor_image = sim.simxGetVisionSensorImage(client_id, vision_sensor_handle, 0, sim.simx_opmode_buffer)
 
 	##################################################
 
@@ -140,6 +334,12 @@ def get_vision_sensor_depth_image(client_id, vision_sensor_handle):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# for first read 
+	return_code, image_resolution, vision_sensor_depth_image = sim.simxGetVisionSensorDepthBuffer(client_id, vision_sensor_handle, sim.simx_opmode_streaming)
+
+	while (return_code != 0):
+		# for subsequent reads
+		return_code, image_resolution, vision_sensor_depth_image = sim.simxGetVisionSensorDepthBuffer(client_id, vision_sensor_handle, sim.simx_opmode_buffer)
 
 	##################################################
 
@@ -180,6 +380,15 @@ def transform_vision_sensor_depth_image(vision_sensor_depth_image, image_resolut
 
 	##############	ADD YOUR CODE HERE	##############
 
+	# converting vision_sensor_depth_image to numpy array
+	sensorImage = np.array(vision_sensor_depth_image, dtype = np.float32)
+
+	# resizing 1d array to 2d array
+	sensorImage.resize([image_resolution[0], image_resolution[1]])
+	# print(image_resolution)
+
+	# flipping about y-axis
+	transformed_depth_image = cv2.flip(sensorImage, 1)
 
 	##################################################
 	
@@ -214,8 +423,51 @@ def detect_berries(transformed_image, transformed_depth_image):
 
 	##############	ADD YOUR CODE HERE	##############
 	
+	berries_dictionary[berries[0]] = []
+	berries_dictionary[berries[1]] = []
+	berries_dictionary[berries[2]] = []
 
+	colors = colors_detected(transformed_image)
+
+	keys_color = list(colors.keys())
+
+	for key in keys_color:
+
+		coordinates = []
+
+		if (key == 'Pink'):
+			c = colors.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				depth = transformed_depth_image[cy-1][cx-1]
+				depth = round(depth,2)
+				coord = (cx,cy,depth)
+				coordinates.insert(3,coord)
+				berries_dictionary[berries[0]] = coordinates
+			
+		elif (key == 'Blue'):
+			c = colors.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				depth = transformed_depth_image[cy-1][cx-1]
+				depth = round(depth,2)
+				coord = (cx,cy,depth)
+				coordinates.insert(3,coord)
+				berries_dictionary[berries[1]] = coordinates
 	
+		elif (key == 'Yellow'):
+			c = colors.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				depth = transformed_depth_image[cy-1][cx-1]
+				depth = round(depth,2)
+				coord = (cx,cy,depth)
+				coordinates.insert(3,coord)
+				berries_dictionary[berries[2]] = coordinates
+
 	##################################################
 	return berries_dictionary
 
@@ -246,6 +498,99 @@ def detect_berry_positions(berries_dictionary):
 
 	##############	ADD YOUR CODE HERE	##############
 
+	berry_positions_dictionary[berries[0]] = []
+	berry_positions_dictionary[berries[1]] = []
+	berry_positions_dictionary[berries[2]] = []
+
+	keys = list(berries_dictionary.keys())
+
+	for key in keys:
+
+		coordinates = []
+
+		if (key == 'Strawberry'):
+			c = berries_dictionary.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				z3 = pair[2]
+
+				y = 256*0.0002645833
+				cxt = cx*0.0002645833 - y
+				cyt = cy*0.0002645833 - y
+
+				if(cx > 256 or cy > 256):
+					z1 = ((cxt+y)/(2*y)) - 0.5
+					z2 = ((cyt+y)/(2*y)) - 0.5
+				else:
+					z1 = ((cxt+y)/(2*y)) + 0.5
+					z2 = ((cyt+y)/(2*y)) + 0.5
+
+				z3 = z3*2
+
+				z1 = round(z1,2)
+				z2 = round(z2,2)
+				z3 = round(z3,2)
+
+				coord = (z1,z2,z3)
+				coordinates.insert(3,coord)
+				berry_positions_dictionary[berries[0]] = coordinates
+
+		elif (key == 'Blueberry'):
+			c = berries_dictionary.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				z3 = pair[2]
+
+				y = 256*0.0002645833
+				cxt = cx*0.0002645833 - y
+				cyt = cy*0.0002645833 - y
+
+				if(cx > 256 or cy > 256):
+					z1 = ((cxt+y)/(2*y)) - 0.5
+					z2 = ((cyt+y)/(2*y)) - 0.5
+				else:
+					z1 = ((cxt+y)/(2*y)) + 0.5
+					z2 = ((cyt+y)/(2*y)) + 0.5
+
+				z3 = z3*2
+
+				z1 = round(z1,2)
+				z2 = round(z2,2)
+				z3 = round(z3,2)
+
+				coord = (z1,z2,z3)
+				coordinates.insert(3,coord)
+				berry_positions_dictionary[berries[1]] = coordinates
+		
+		if (key == 'Lemon'):
+			c = berries_dictionary.get(key)
+			for pair in c:
+				cx = pair[0]
+				cy = pair[1]
+				z3 = pair[2]
+
+				y = 256*0.0002645833
+				cxt = cx*0.0002645833 - y
+				cyt = cy*0.0002645833 - y
+
+				if(cx > 256 or cy > 256):
+					z1 = ((cxt+y)/(2*y)) - 0.5
+					z2 = ((cyt+y)/(2*y)) - 0.5
+				else:
+					z1 = ((cxt+y)/(2*y)) + 0.5
+					z2 = ((cyt+y)/(2*y)) + 0.5
+
+				z3 = z3*2
+
+				z1 = round(z1,2)
+				z2 = round(z2,2)
+				z3 = round(z3,2)
+
+				coord = (z1,z2,z3)
+				coordinates.insert(3,coord)
+				berry_positions_dictionary[berries[2]] = coordinates
 
 
 	##################################################
